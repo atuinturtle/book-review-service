@@ -23,4 +23,19 @@ public class BookService {
 				.map(bookMapper::toDto)
 				.orElseThrow(() -> new NoSuchElementException("Book not found with id: %d".formatted(id)));
 	}
+
+	public BookDto create(final BookDto bookDto) {
+		final var book = bookMapper.toEntity(bookDto);
+		final var saved = bookRepository.save(book);
+		return bookMapper.toDto(saved);
+	}
+
+	public BookDto update(final Long id, final BookDto bookDto) {
+		final var book = bookRepository.findById(id.intValue())
+				.orElseThrow(() -> new NoSuchElementException("Book not found with id: %d".formatted(id)));
+
+		final var updatedBook = bookMapper.partialUpdate(bookDto, book);
+		final var savedBook = bookRepository.save(updatedBook);
+		return bookMapper.toDto(savedBook);
+	}
 }

@@ -1,5 +1,6 @@
 package com.mmakay.bookreviewservice.book;
 
+import com.mmakay.bookreviewservice.Genre;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,4 +32,12 @@ public class Book {
 	@Column(name = "created_at")
 	private Instant createdAt;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "genre_id")
+	private Genre genre;
+
+	@PrePersist
+	protected void onCreate() {
+		this.createdAt = Instant.now();
+	}
 }

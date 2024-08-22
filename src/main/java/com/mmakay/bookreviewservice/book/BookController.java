@@ -1,10 +1,9 @@
 package com.mmakay.bookreviewservice.book;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -18,8 +17,20 @@ public class BookController {
 		return bookService.getAllBooks();
 	}
 
-	@GetMapping("api/books/{id}")
+	@GetMapping("/api/books/{id}")
 	public ResponseEntity<BookDto> getBook(@PathVariable Long id) {
-		return ResponseEntity.ok(bookService.getBook(id));
+		final var book = bookService.getBook(id);
+		return ResponseEntity.ok(book);
+	}
+
+	@PostMapping("/api/books")
+	public ResponseEntity<BookDto> createBook(@RequestBody BookDto bookDto) {
+		final var book = bookService.create(bookDto);
+		return ResponseEntity.status(HttpStatus.CREATED).body(book);
+	}
+
+	@PutMapping("/api/books/{id}")
+	public ResponseEntity<BookDto> updateBook(@PathVariable Long id, @RequestBody BookDto bookDto) {
+		return ResponseEntity.ok(bookService.update(id, bookDto));
 	}
 }

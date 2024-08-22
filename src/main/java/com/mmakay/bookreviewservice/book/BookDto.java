@@ -5,5 +5,5 @@ import java.io.Serializable;
 /**
  * DTO for {@link Book}
  */
-public record BookDto(Integer id, String title, String author, String description) implements Serializable {
+public record BookDto(Integer id, String title, String author, String description, GenreDto genre) implements Serializable {
   }
