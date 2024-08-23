@@ -12,30 +12,25 @@ public class BookService {
 	private final BookRepository bookRepository;
 	private final BookMapper bookMapper;
 
-	public List<BookDto> getAllBooks() {
-		return bookRepository.findAll().stream()
-				.map(bookMapper::toDto)
-				.toList();
+	List<Book> getAll() {
+		return bookRepository.findAll();
 	}
 
-	public BookDto getBook(final Long id) {
+	public Book getBook(final Long id) {
 		return bookRepository.findById(id.intValue())
-				.map(bookMapper::toDto)
 				.orElseThrow(() -> new NoSuchElementException("Book not found with id: %d".formatted(id)));
 	}
 
-	public BookDto create(final BookDto bookDto) {
-		final var book = bookMapper.toEntity(bookDto);
-		final var saved = bookRepository.save(book);
-		return bookMapper.toDto(saved);
+	Book save(final Book book) {
+		return bookRepository.save(book);
 	}
 
-	public BookDto update(final Long id, final BookDto bookDto) {
-		final var book = bookRepository.findById(id.intValue())
-				.orElseThrow(() -> new NoSuchElementException("Book not found with id: %d".formatted(id)));
+	public Book update(final Long id, final BookDto bookDto) {
+		final var book = getBook(id);
 
 		final var updatedBook = bookMapper.partialUpdate(bookDto, book);
-		final var savedBook = bookRepository.save(updatedBook);
-		return bookMapper.toDto(savedBook);
+
+		return save(updatedBook);
+
 	}
 }

@@ -11,26 +11,40 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BookController {
 	private final BookService bookService;
+	private final BookMapper bookMapper;
 
 	@GetMapping("/api/books")
 	public List<BookDto> getBooks() {
-		return bookService.getAllBooks();
+
+		return bookService.getAll().stream()
+				.map(bookMapper::toDto)
+				.toList();
 	}
 
 	@GetMapping("/api/books/{id}")
 	public ResponseEntity<BookDto> getBook(@PathVariable Long id) {
+
 		final var book = bookService.getBook(id);
-		return ResponseEntity.ok(book);
+
+		return ResponseEntity.ok(bookMapper.toDto(book));
 	}
 
 	@PostMapping("/api/books")
 	public ResponseEntity<BookDto> createBook(@RequestBody BookDto bookDto) {
-		final var book = bookService.create(bookDto);
-		return ResponseEntity.status(HttpStatus.CREATED).body(book);
+
+		final var book = bookMapper.toEntity(bookDto);
+		final var savedBook = bookService.save(book);
+		final var outDto = bookMapper.toDto(savedBook);
+
+		return ResponseEntity.status(HttpStatus.CREATED).body(outDto);
 	}
 
 	@PutMapping("/api/books/{id}")
 	public ResponseEntity<BookDto> updateBook(@PathVariable Long id, @RequestBody BookDto bookDto) {
-		return ResponseEntity.ok(bookService.update(id, bookDto));
+
+		final var updated = bookService.update(id, bookDto);
+		final var outDto = bookMapper.toDto(updated);
+
+		return ResponseEntity.ok(outDto);
 	}
 }
