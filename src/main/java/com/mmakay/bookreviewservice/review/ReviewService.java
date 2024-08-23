@@ -5,39 +5,34 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
 public class ReviewService {
 	private final ReviewRepository reviewRepository;
-	private final ReviewMapper reviewMapper;
 
-	public List<ReviewDto> getAllReviews() {
-		return reviewRepository.findAll().stream()
-				.map(reviewMapper::toDto)
-				.toList();
+	public List<Review> getAllReviews() {
+		return reviewRepository.findAll();
 	}
 
-	public List<ReviewDto> getReviewsByBookId(final Long bookId) {
-		return reviewRepository.findByBook_Id(bookId.intValue())
-				.map(reviewMapper::toDto)
-				.toList();
+	public Stream<Review> getReviewsByBookId(final Long bookId) {
+		return reviewRepository.findByBook_Id(bookId.intValue());
 	}
 
-	public ReviewDto getReviewsById(final Long id) {
+	public Review getReviewsById(final Long id) {
 		return reviewRepository.findById(id.intValue())
-				.map(reviewMapper::toDto)
 				.orElseThrow(() -> new NoSuchElementException("Review not found"));
 	}
 
-	public ReviewDto create(final ReviewDto reviewDto) {
-		return reviewMapper.toDto(reviewRepository.save(reviewMapper.toEntity(reviewDto)));
+	public Review save(final Review entity) {
+		return reviewRepository.save(entity);
 	}
 
 	public Double getAverageRating(final Long bookId) {
-		return reviewRepository.findByBook_Id(bookId.intValue())
+		return getReviewsByBookId(bookId)
 				.mapToInt(Review::getRating)
 				.average()
-				.orElseThrow(() -> new NoSuchElementException("Review not found"));
+				.orElseThrow(() -> new NoSuchElementException("No review found"));
 	}
 }
