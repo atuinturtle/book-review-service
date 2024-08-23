@@ -1,6 +1,5 @@
 package com.mmakay.bookreviewservice.book;
 
-import com.mmakay.bookreviewservice.Genre;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

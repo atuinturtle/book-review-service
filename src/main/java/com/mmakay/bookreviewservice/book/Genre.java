@@ -1,4 +1,4 @@
-package com.mmakay.bookreviewservice;
+package com.mmakay.bookreviewservice.book;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
